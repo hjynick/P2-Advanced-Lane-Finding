@@ -34,6 +34,23 @@ The `challenge_video.mp4` video is an extra (and optional) challenge for you if 
 
 If you're feeling ambitious (again, totally optional though), don't stop there!  We encourage you to go out and take video of your own, calibrate your camera and show us how you would implement this project from scratch!
 
-## How to write a README
-A well written README file can enhance your project and portfolio.  Develop your abilities to create professional README files by completing [this free course](https://www.udacity.com/course/writing-readmes--ud777).
+Generally we need to build a pipeline in this project and use it to process the images and the videos. the steps of this pipeline i can show you guy as followed:
+
+### first, we've got some chessboard pictures to calibrate the camera image
+
+In this step, i apply some openCV functions on the chessboard picture so that i can get the calibration matrix.
+
+### second, i use perspective transform so that i can get the transformed lane lines
+
+in this step, i got the transform matrix.
+
+### third, i use the colorspace threhold to extract the pure lane lines of the transformed image
+
+I've combined several filter such as sobel filter and the hls filter to get the best results.
+
+### forth, i use the sliding windows algorithms to calculate the active pixel and got the polylines
+
+Using the ploylines we can get the curvature and the radios of the curve.
+
+### finaly, i combined all the steps to build a pipeline and use it to process the image and the videos.
 
