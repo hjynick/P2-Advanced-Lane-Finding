@@ -4,13 +4,7 @@
 
 In this project, your goal is to write a software pipeline to identify the lane boundaries in a video, but the main output or product we want you to create is a detailed writeup of the project.  Check out the [writeup template](https://github.com/udacity/CarND-Advanced-Lane-Lines/blob/master/writeup_template.md) for this project and use it as a starting point for creating your own writeup.  
 
-Creating a great writeup:
----
-A great writeup should include the rubric points as well as your description of how you addressed each point.  You should include a detailed description of the code used in each step (with line-number references and code snippets where necessary), and links to other supporting documents or external references.  You should include images in your writeup to demonstrate how your code works with examples.  
 
-All that said, please be concise!  We're not looking for you to write a book here, just a brief description of how you passed each rubric point, and references to the relevant code :). 
-
-You're not required to use markdown for your writeup.  If you use another method please just submit a pdf of your writeup.
 
 The Project
 ---
@@ -54,3 +48,106 @@ Using the ploylines we can get the curvature and the radios of the curve.
 
 ### finaly, i combined all the steps to build a pipeline and use it to process the image and the videos.
 
+
+
+# Camera Calibration
+
+* Have the camera matrix and distortion coefficients been computed correctly and checked on one of the calibration images as a test?
+
+The code for this step is contained in the first code cell of the IPython notebook (or in lines # through # of the
+file called ···some_file.py ···).
+I start by preparing "object points", which will be the (x, y, z) coordinates of the chessboard corners in the
+world. Here I am assuming the chessboard is fixed on the (x, y) plane at z=0, such that the object points are
+the same for each calibration image. Thus, objp is just a replicated array of coordinates, and objpoints
+will be appended with a copy of it every time I successfully detect all chessboard corners in a test image.
+imgpoints will be appended with the (x, y) pixel position of each of the corners in the image plane with
+each successful chessboard detection.
+
+I then used the output objpoints and imgpoints to compute the camera calibration and distortion
+coefficients using the ···cv2.calibrateCamera() ···function. I applied this distortion correction to the test
+image using the ···cv2.undistort()··· function and obtained this result:
+
+  ![undistort]('../CarND-Advanced-Lane-Lines/output_images/undis_output.png')
+
+# Pipeline (single images)
+### 1. Has the distortion correction been correctly applied to each image?
+* To demonstrate this step, I will describe how I apply the distortion correction to one of the test images like this
+one:
+  ![image]('..\CarND-Advanced-Lane-Lines\output_images\cali_output.png')
+  
+
+### 2. Has a binary image been created using color transforms, gradients or other methods?
+
+* Oooh, binary image... you mean like this one? (note: this is not from one of the test images)
+
+  ![image]('../CarND-Advanced-Lane-Lines/output_images/binary_output.png')
+  
+### 3. Describe performence of a perspective transform and provide an example of a transformed image.
+
+The code for my perspective transform includes a function called `warper()`, which appears in lines 1 through 8 in the file `example.py` (output_images/examples/example.py) (or, for example, in the 3rd code cell of the IPython notebook).  The `warper()` function takes as inputs an image (`img`), as well as source (`src`) and destination (`dst`) points.  I chose the hardcode the source and destination points in the following manner:
+
+```python
+src = np.float32(
+    [[(img_size[0] / 2) - 55, img_size[1] / 2 + 100],
+    [((img_size[0] / 6) - 10), img_size[1]],
+    [(img_size[0] * 5 / 6) + 60, img_size[1]],
+    [(img_size[0] / 2 + 55), img_size[1] / 2 + 100]])
+dst = np.float32(
+    [[(img_size[0] / 4), 0],
+    [(img_size[0] / 4), img_size[1]],
+    [(img_size[0] * 3 / 4), img_size[1]],
+    [(img_size[0] * 3 / 4), 0]])
+```
+
+This resulted in the following source and destination points:
+
+| Source        | Destination   | 
+|:-------------:|:-------------:| 
+| 585, 460      | 320, 0        | 
+| 203, 720      | 320, 720      |
+| 1127, 720     | 960, 720      |
+| 695, 460      | 960, 0        |
+
+I verified that my perspective transform was working as expected by drawing the `src` and `dst` points onto a test image and its warped counterpart to verify that the lines appear parallel in the warped image.
+
+![image]('../CarND-Advanced-Lane-Lines/output_images/perspective_output.png')
+
+### 4. dentified lane-line pixels and fit their positions with a polynomial.
+
+I defined the fit_poly to fit the lane lines with a polyline.
+
+
+
+### 5. Describe how (and identify where in your code) you calculated the radius of curvature of the lane and the position of the vehicle with respect to center.
+
+
+
+### 6. Provide an example image of your result plotted back down onto the road such that the lane area is identified clearly.
+
+I implemented this step in lines # through # in my code in `yet_another_file.py` in the function `map_lane()`.  Here is an example of my result on a test image:
+
+![image]('../CarND-Advanced-Lane-Lines/output_images/perspective_output.png')
+
+### Pipeline (video)
+
+#### 1. Provide a link to final video output.  
+
+Here's a [../CarND-Advanced-Lane-Lines/result.mp4](./project_video.mp4)
+
+---
+
+### Discussion
+
+#### 1 the fit output
+
+in the output videos, the right lane looks well but it looks like that the algorithms did not fit the left lane very well. it is probably because that the colorspace threhold filter didn't works very well. a friend of mein has applied the lab colorspace with the l and a channel to extract the lane line and it works well and can resist the sunshine and the shadow. so i would like to try this laterly.
+
+#### 2 the lane class
+
+so i didn't really use the object oriented programing because the attribute of the lane line is a little few. but i've tried this and it looks good.
+
+#### 3 sliding window 
+
+using the sliding window algorithms to extract the lane pixel works well but it takes much time. so i will develop a new algorithms laterly.
+
+i've learn lots of things from this project and i should always improve my program skill.
